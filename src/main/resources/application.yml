@@ -32,3 +32,11 @@ resilience4j:
         base-config: myBaseRetryConfig
       retryWithFallback:
         base-config: myBaseRetryConfig
+  bulkhead:
+    configs:
+      myBaseBulkheadConfig:
+        maxConcurrentCalls: 3
+        maxWaitDuration: 2000
+    instances:
+      bulkheadService:
+        base-config: myBaseBulkheadConfig
