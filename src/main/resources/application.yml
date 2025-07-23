@@ -6,13 +6,13 @@ resilience4j:
     configs:
       myBaseConfig:
         slidingWindowSize: 10
-#        minimumNumberOfCalls: 5
+        minimumNumberOfCalls: 5
         failureRateThreshold: 50
         waitDurationInOpenState: 3000
         permittedNumberOfCallsInHalfOpenState: 3
         recordExceptions:
           - java.lang.RuntimeException
-          - java.io.IOException
+          - java.lang.IllegalArgumentException
     instances:
       circuitBreakerWithoutFallback:
         base-config: myBaseConfig
@@ -20,3 +20,15 @@ resilience4j:
       circuitBreakerWithFallback:
         base-config: myBaseConfig
         minimumNumberOfCalls: 6
+  retry:
+    configs:
+      myBaseRetryConfig:
+        maxAttempts: 3
+        waitDuration: 1000
+        retryExceptions:
+          - java.lang.IllegalArgumentException
+    instances:
+      retryWithoutFallback:
+        base-config: myBaseRetryConfig
+      retryWithFallback:
+        base-config: myBaseRetryConfig
