@@ -40,3 +40,12 @@ resilience4j:
     instances:
       bulkheadService:
         base-config: myBaseBulkheadConfig
+  ratelimiter:
+    configs:
+      myBaseRateLimiterConfig:
+        limitForPeriod: 5
+        limitRefreshPeriod: 2000
+        timeoutDuration: 500
+    instances:
+      rateLimiterService:
+        base-config: myBaseRateLimiterConfig
