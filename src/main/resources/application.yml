@@ -49,3 +49,11 @@ resilience4j:
     instances:
       rateLimiterService:
         base-config: myBaseRateLimiterConfig
+  timelimiter:
+    configs:
+      myBaseTimeLimiterConfig:
+        timeoutDuration: 500
+        cancel-running-future: true
+    instances:
+      timeLimiterService:
+        base-config: myBaseTimeLimiterConfig
