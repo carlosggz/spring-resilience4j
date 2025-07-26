@@ -20,6 +20,9 @@ resilience4j:
       circuitBreakerWithFallback:
         base-config: myBaseConfig
         minimumNumberOfCalls: 6
+      multipleAnnotationsService:
+        base-config: myBaseConfig
+        minimumNumberOfCalls: 3
   retry:
     configs:
       myBaseRetryConfig:
@@ -31,6 +34,8 @@ resilience4j:
       retryWithoutFallback:
         base-config: myBaseRetryConfig
       retryWithFallback:
+        base-config: myBaseRetryConfig
+      multipleAnnotationsService:
         base-config: myBaseRetryConfig
   bulkhead:
     configs:
@@ -56,4 +61,6 @@ resilience4j:
         cancel-running-future: true
     instances:
       timeLimiterService:
+        base-config: myBaseTimeLimiterConfig
+      multipleAnnotationsService:
         base-config: myBaseTimeLimiterConfig
