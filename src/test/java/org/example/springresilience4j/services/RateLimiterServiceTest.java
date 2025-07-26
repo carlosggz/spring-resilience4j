@@ -1,17 +1,18 @@
 package org.example.springresilience4j.services;
 
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import lombok.SneakyThrows;
+import org.example.springresilience4j.utils.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-class RateLimiterServiceTest {
+class RateLimiterServiceTest extends IntegrationTest {
 
     @Autowired
     private RateLimiterService rateLimiterService;
@@ -23,8 +24,10 @@ class RateLimiterServiceTest {
     private int limitRefreshPeriod;
 
     @Test
+    @SneakyThrows
     void whenReachesLimitForPeriodThenThrowsException() {
         //given
+        waitFor(limitRefreshPeriod);
         IntStream
                 .rangeClosed(1, limitForPeriod)
                 .forEach(i -> new Thread(() -> {
@@ -36,15 +39,15 @@ class RateLimiterServiceTest {
                 }).start());
 
         //when/then
-        assertThrows(RequestNotPermitted.class, () -> {
-            Thread.sleep(100);
-            rateLimiterService.doSomething(limitForPeriod+1, 2*limitRefreshPeriod);
-        });
+        waitFor(100);
+        assertThrows(RequestNotPermitted.class, () -> rateLimiterService.doSomething(limitForPeriod+1, 2*limitRefreshPeriod));
     }
 
     @Test
+    @SneakyThrows
     void whenReachesLimitForPeriodItWaits() {
         //given
+        waitFor(limitRefreshPeriod);
         IntStream
                 .rangeClosed(1, limitForPeriod)
                 .forEach(i -> new Thread(() -> {
@@ -56,9 +59,7 @@ class RateLimiterServiceTest {
                 }).start());
 
         //when/then
-        assertDoesNotThrow(() -> {
-            Thread.sleep(limitRefreshPeriod-100);
-            rateLimiterService.doSomething(limitForPeriod+1, limitRefreshPeriod/2);
-        });
+        waitFor(limitRefreshPeriod-100);
+        assertDoesNotThrow(() -> rateLimiterService.doSomething(limitForPeriod+1, limitRefreshPeriod/2));
     }
 }

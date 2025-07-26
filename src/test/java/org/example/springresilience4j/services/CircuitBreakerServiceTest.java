@@ -1,18 +1,17 @@
 package org.example.springresilience4j.services;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import lombok.SneakyThrows;
+import org.example.springresilience4j.utils.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-class CircuitBreakerServiceTest {
+class CircuitBreakerServiceTest extends IntegrationTest {
     @Autowired
     private CircuitBreakerService circuitBreakerService;
 
@@ -26,7 +25,6 @@ class CircuitBreakerServiceTest {
     int waitDurationInOpenState;
 
     @Test
-    @SneakyThrows
     void whenCallsGetResponseWithZeroValueThenThrowsRuntimeException() {
         //given
         IntStream
@@ -36,7 +34,7 @@ class CircuitBreakerServiceTest {
         //when/then
         assertThrows(CallNotPermittedException.class, () -> circuitBreakerService.getResponse(0));
 
-        Thread.sleep(waitDurationInOpenState);
+        waitFor(waitDurationInOpenState);
 
         assertThrows(IllegalArgumentException.class, () -> circuitBreakerService.getResponse(0));
     }
@@ -47,7 +45,6 @@ class CircuitBreakerServiceTest {
     }
 
     @Test
-    @SneakyThrows
     void whenCallsGetResponseWithFallbackWithZeroValueThenReturnsTheFallback() {
         //given
         IntStream
@@ -57,7 +54,7 @@ class CircuitBreakerServiceTest {
         //when/then
         assertThrows(CallNotPermittedException.class, () -> circuitBreakerService.getResponseWithFallback(0));
 
-        Thread.sleep(waitDurationInOpenState);
+        waitFor(waitDurationInOpenState);
 
         assertEquals(0, circuitBreakerService.getResponseWithFallback(0));
     }

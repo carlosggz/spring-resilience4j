@@ -1,16 +1,16 @@
 package org.example.springresilience4j.services;
 
+import org.example.springresilience4j.utils.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-class RetryServiceTest {
+class RetryServiceTest extends IntegrationTest {
 
     @MockitoSpyBean
     private RetryService retryService;
